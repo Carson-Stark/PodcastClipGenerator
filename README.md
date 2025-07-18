@@ -3,21 +3,21 @@
 ![clips](https://github.com/user-attachments/assets/9b5aa818-7fd1-48b7-aef6-f3f66a50f949)
 
 ## Overview
-This repository provides a comprehensive pipeline for processing podcast clips. It includes transcription, face detection, region selection, speaker diarization, caption generation, and video editing. The pipeline is modular, allowing users to run individual scripts or the entire pipeline.
+This repository provides python tools to automatically generate vertical short-form social media clips from podcast segments. It includes transcription, face detection, region selection, speaker diarization, caption generation, and video editing. The pipeline is modular, allowing users to run individual scripts or the entire pipeline.
 
 - **Original Project Date:** April 2024
 
 ## Features
+- Region of interest detection using YOLOv3 person detection
 - Automatic transcription using OpenAI's Whisper model
-- Speaker diarization with face tracking and manual override tools
-- Region detection using Mediapipe + OpenCV
-- Configurable GUI for customizing which subject is in focus at what time
-- Intelligent word-aligned caption generation and formatting
+- Automatic speaker detection with face tracking, audio diarization, or manual override tools
+- Tkinter GUI for customizing which subject is in focus at what time
+- Intelligent caption generation with audio synced word hightling
 - Exports final vertical videos with dynamic face framing and styled subtitles
 
 ## Example Output Video
 
-Input was the raw landscape video.
+Input was the raw landscape podcast segment.
 
 https://github.com/user-attachments/assets/6d3e1fc5-b69f-4b3f-b904-8a502d1db476
 
