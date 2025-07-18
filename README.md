@@ -9,6 +9,7 @@ This repository provides python tools to automatically generate vertical short-f
 
 ## Features
 - Region of interest detection using YOLOv3 person detection
+- Supports multiple subjects in focus simultaneously, dynamically fitting them into the video frame
 - Automatic transcription using OpenAI's Whisper model
 - Automatic speaker detection with face tracking, audio diarization, or manual override tools
 - Tkinter GUI for customizing which subject is in focus at what time
