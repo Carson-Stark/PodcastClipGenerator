@@ -3,3 +3,5 @@ __pycache__
 *.cfg
 *.weights
 *.mp4
+outputs/*
+!outputs/.gitkeep 

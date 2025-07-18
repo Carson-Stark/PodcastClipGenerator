@@ -4,7 +4,7 @@ import pygame
 from PIL import Image, ImageTk
 
 class HorizontalBarsApp(tk.Tk):
-    def __init__(self, video_path):
+    def __init__(self, video_path, save_path="outputs/speaker_diarization.txt"):
         super().__init__()
         self.title("Resizable Horizontal Bars")
 
@@ -14,6 +14,7 @@ class HorizontalBarsApp(tk.Tk):
         self.canvas.pack()
 
         self.video_path = video_path
+        self.save_path = save_path
         self.video_clip = VideoFileClip(video_path)
         self.audio = self.video_clip.audio
         self.audio.write_audiofile("audio.wav")
@@ -39,6 +40,8 @@ class HorizontalBarsApp(tk.Tk):
         frame = ImageTk.PhotoImage(frame)
         self.canvas.create_image(0, 0, image=frame, anchor="nw")
         self.canvas.image = frame
+
+        self.diarization_results = None
 
     def create_tracks(self):
         for i in range(4):
@@ -142,10 +145,10 @@ class HorizontalBarsApp(tk.Tk):
         self.play_button.pack(side="left", pady=10)
         self.save_button = tk.Button(button_frame, text="Save", command=self.save)
         self.save_button.pack(side="left", pady=10)
-        tk.Button(button_frame, text="Quit", command=self.destroy).pack(side="left", pady=10)
+        tk.Button(button_frame, text="Quit", command=self.on_quit).pack(side="left", pady=10)
 
     def save(self):
-        with open("speaker_diarization.txt", "w") as f:
+        with open(self.save_path, "w") as f:
             for i, track in enumerate(self.tracks):
                 intervals = self.intervals[track]
                 for interval in intervals:
@@ -153,7 +156,7 @@ class HorizontalBarsApp(tk.Tk):
                     start_time = coords[0] / 800 * self.video_clip.duration
                     end_time = coords[2] / 800 * self.video_clip.duration
                     f.write(f"{start_time} {end_time} {i}\n")
-            print("Saved speaker diarization to speaker_diarization.txt")
+            print(f"Saved speaker diarization to {self.save_path}")
 
     def set_frame(self, frame_num):
         self.time = int(frame_num) / self.video_clip.fps
@@ -190,10 +193,34 @@ class HorizontalBarsApp(tk.Tk):
             current_frame = int(self.time * self.video_clip.fps)
             self.set_frame(current_frame)
 
+    def get_diarization_results(self):
+        diarization_results = []
+        for i, track in enumerate(self.tracks):
+            intervals = self.intervals[track]
+            for interval in intervals:
+                coords = track.coords(interval)
+                start_time = coords[0] / 800 * self.video_clip.duration
+                end_time = coords[2] / 800 * self.video_clip.duration
+                diarization_results.append((start_time, end_time, i))
+        return diarization_results
+    
+    def on_quit(self):
+        """Collect the intervals while widgets still exist, then leave the loop."""
+        self.diarization_results = self.get_diarization_results()
+        self.save()
+        pygame.mixer.music.stop()          # be nice, stop the sound
+        self.video_clip.close()
+        self.quit()                        # ends mainloop but keeps objects alive
+
+def run_app(input_video_path):
+    app = HorizontalBarsApp(input_video_path)
+    app.after(100, app.update_video)
+    app.mainloop()                # blocks until user clicks “Quit” (on_quit)
+    results = app.diarization_results
+    app.destroy()                 # now it’s safe to destroy widgets
+    return results
+
 if __name__ == "__main__":
-    video_path = "input.mp4"  # Change this to your video file path
-    app = HorizontalBarsApp(video_path)
-    while True:
-        app.update_video()
-        app.update()
-        app.update_idletasks()
+    diar = run_app("input.mp4")
+    for start, end, track in diar:
+        print(f"Track {track}: {start:6.2f} s – {end:6.2f} s")
