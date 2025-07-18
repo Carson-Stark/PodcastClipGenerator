@@ -1,5 +1,7 @@
 # Podcast Clips Pipeline
 
+![clips](https://github.com/user-attachments/assets/9b5aa818-7fd1-48b7-aef6-f3f66a50f949)
+
 ## Overview
 This repository provides a comprehensive pipeline for processing podcast clips. It includes transcription, face detection, region selection, speaker diarization, caption generation, and video editing. The pipeline is modular, allowing users to run individual scripts or the entire pipeline.
 
@@ -17,6 +19,7 @@ This repository provides a comprehensive pipeline for processing podcast clips. 
 
 Input was the raw landscape video.
 
+https://github.com/user-attachments/assets/6d3e1fc5-b69f-4b3f-b904-8a502d1db476
 
 ## Setup
 1. Clone the repository:
@@ -70,6 +73,7 @@ If you don't want to configure the file names, name your input video `input.mp4`
    - **Output:** regions.txt (detected regions).
 
 2. Create diarization
+
    Use the gui tool to set the intervals where you want each person in focus. The top bar corresponds to the leftmost person.
    ```
    python gui_diarization.py
@@ -77,14 +81,14 @@ If you don't want to configure the file names, name your input video `input.mp4`
    - **Input:** input.mp4 (video file).
    - **Output:** Speaker intervals saved in `speaker_diarization.txt`.
 
-3. Run the clip editor
+4. Run the clip editor
    ```
    python clipeditor.py
    ```
    - **Input:** `regions.txt` and `speaker_diarization.txt`.
    - **Output:** `output.mp4` (edited video with audio).
 
-4. Add captions
+5. Add captions
    ```
    python captions.py
    ```
